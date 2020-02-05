@@ -360,22 +360,22 @@ func (c *Container) Provide(constructor interface{}, opts ...ProvideOption) erro
 //
 // The function may return an error to indicate failure. The error will be
 // returned to the caller as-is.
-func (c *Container) Invoke(function interface{}, opts ...InvokeOption) error {
+func (c *Container) Invoke(function interface{}, opts ...InvokeOption) ([]reflect.Value, error) {
 	ftype := reflect.TypeOf(function)
 	if ftype == nil {
-		return errors.New("can't invoke an untyped nil")
+		return nil, errors.New("can't invoke an untyped nil")
 	}
 	if ftype.Kind() != reflect.Func {
-		return errf("can't invoke non-function %v (type %v)", function, ftype)
+		return nil, errf("can't invoke non-function %v (type %v)", function, ftype)
 	}
 
 	pl, err := newParamList(ftype)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := shallowCheckDependencies(c, pl); err != nil {
-		return errMissingDependencies{
+		return nil, errMissingDependencies{
 			Func:   digreflect.InspectFunc(function),
 			Reason: err,
 		}
@@ -383,28 +383,28 @@ func (c *Container) Invoke(function interface{}, opts ...InvokeOption) error {
 
 	if !c.isVerifiedAcyclic {
 		if err := c.verifyAcyclic(); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	args, err := pl.BuildList(c)
 	if err != nil {
-		return errArgumentsFailed{
+		return nil, errArgumentsFailed{
 			Func:   digreflect.InspectFunc(function),
 			Reason: err,
 		}
 	}
 
-	returned := reflect.ValueOf(function).Call(args)
-	if len(returned) == 0 {
-		return nil
-	}
-	if last := returned[len(returned)-1]; isError(last.Type()) {
-		if err, _ := last.Interface().(error); err != nil {
-			return err
-		}
-	}
-	return nil
+	return reflect.ValueOf(function).Call(args), nil
+	//if len(returned) == 0 {
+	//	return nil
+	//}
+	//if last := returned[len(returned)-1]; isError(last.Type()) {
+	//	if err, _ := last.Interface().(error); err != nil {
+	//		return err
+	//	}
+	//}
+
 }
 
 func (c *Container) verifyAcyclic() error {

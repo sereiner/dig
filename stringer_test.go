@@ -78,9 +78,9 @@ func TestStringer(t *testing.T) {
 	require.NoError(t, c.Provide(func(A) stringOut { return stringOut{S: "foo"} }))
 	require.NoError(t, c.Provide(func(B) stringOut { return stringOut{S: "bar"} }))
 	require.NoError(t, c.Provide(func(C) stringOut { return stringOut{S: "baz"} }))
-
-	require.NoError(t, c.Invoke(func(D) {
-	}))
+	_, err := c.Invoke(func(D) {
+	})
+	require.NoError(t, err)
 
 	s := c.String()
 

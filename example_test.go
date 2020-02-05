@@ -57,8 +57,9 @@ func Example_minimal() {
 
 	// Invoke a function that requires the logger, which in turn builds the
 	// Config first.
-	err = c.Invoke(func(l *log.Logger) {
+	_, err = c.Invoke(func(l *log.Logger) *log.Logger {
 		l.Print("You've been invoked")
+		return l
 	})
 	if err != nil {
 		panic(err)
@@ -66,4 +67,5 @@ func Example_minimal() {
 
 	// Output:
 	// [foo] You've been invoked
+
 }

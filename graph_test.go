@@ -500,7 +500,7 @@ func TestVisualize(t *testing.T) {
 		c.Provide(func(in2) t4 { return t4{} })
 		c.Provide(func() out2 { return out2{} })
 		c.Provide(func() (out3, error) { return out3{}, errf("great sadness") })
-		err := c.Invoke(func(t4 t4) { return })
+		_, err := c.Invoke(func(t4 t4) { return })
 
 		VerifyVisualization(t, "error", c, VisualizeError(err))
 
@@ -512,7 +512,7 @@ func TestVisualize(t *testing.T) {
 				c.Provide(func(in2) t4 { return t4{} })
 				c.Provide(func() (out2, error) { return out2{}, errf("great sadness") })
 				c.Provide(func() out3 { return out3{} })
-				err := c.Invoke(func(t4 t4) { return })
+				_, err := c.Invoke(func(t4 t4) { return })
 
 				VerifyVisualization(t, "prune_constructor_result", c, VisualizeError(err))
 			})
@@ -523,7 +523,7 @@ func TestVisualize(t *testing.T) {
 				c.Provide(func(in2) (t4, error) { return t4{}, errf("great sadness") })
 				c.Provide(func() out2 { return out2{} })
 				c.Provide(func() out3 { return out3{} })
-				err := c.Invoke(func(t4 t4) { return })
+				_, err := c.Invoke(func(t4 t4) { return })
 
 				VerifyVisualization(t, "prune_non_root_nodes", c, VisualizeError(err))
 			})
@@ -534,14 +534,14 @@ func TestVisualize(t *testing.T) {
 		c := New()
 
 		c.Provide(func(A t1, B t2, C t3) t4 { return t4{} })
-		err := c.Invoke(func(t4 t4) { return })
+		_, err := c.Invoke(func(t4 t4) { return })
 
 		VerifyVisualization(t, "missing", c, VisualizeError(err))
 	})
 
 	t.Run("missing dependency", func(t *testing.T) {
 		c := New()
-		err := c.Invoke(func(t1 t1) { return })
+		_, err := c.Invoke(func(t1 t1) { return })
 
 		VerifyVisualization(t, "missingDep", c, VisualizeError(err))
 	})
