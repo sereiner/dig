@@ -25,9 +25,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sereiner/dig/internal/digreflect/tests/myrepository.git"
+	"github.com/sereiner/dig/internal/digreflect/tests/myrepository.git/mypackage"
 	"github.com/stretchr/testify/assert"
-	myrepository "go.uber.org/dig/internal/digreflect/tests/myrepository.git"
-	mypackage "go.uber.org/dig/internal/digreflect/tests/myrepository.git/mypackage"
 )
 
 func SomeExportedFunction() {}

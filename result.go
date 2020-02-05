@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"go.uber.org/dig/internal/dot"
+	"github.com/sereiner/dig/internal/dot"
 )
 
 // The result interface represents a result produced by a constructor.
